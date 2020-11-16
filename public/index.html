@@ -1,44 +1,55 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-signin-scope" content="profile email">
-    <meta name="google-signin-client_id"
-        content="502468937196-7290fsciri62mqe3rmr334kpl6hvn7i0.apps.googleusercontent.com">
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
-    <title>Google signin</title>
-</head>
+  <meta charset="utf-8">
+  <title>Admin Pro</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <!-- Favicon icon -->
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/images/favicon.png">
 
-<body>
-    <h1>Google signin</h1>
-    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
-    <a href="#" onclick="signOut();">Sign out</a>
-    <script>
-        function onSignIn(googleUser) {
-            // Useful data for your client-side scripts:
-            var profile = googleUser.getBasicProfile();
-            console.log("ID: " + profile.getId()); // Don't send this directly to your server!
-            console.log('Full Name: ' + profile.getName());
-            console.log('Given Name: ' + profile.getGivenName());
-            console.log('Family Name: ' + profile.getFamilyName());
-            console.log("Image URL: " + profile.getImageUrl());
-            console.log("Email: " + profile.getEmail());
+  <!-- Bootstrap Core CSS -->
+  <link href="./assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link href="./assets/css/style.css" rel="stylesheet">
+   <!-- You can change the theme colors from here -->
+   <link id="theme" rel="stylesheet">
+<link rel="stylesheet" href="styles.2c1fbd9514fb0e17e173.css"></head>
+<body class="fix-header card-no-border fix-sidebar">
+   
+  <!-- ============================================================== -->
+    <!-- Preloader - style you can find in spinners.css -->
+    <!-- ============================================================== -->
+    <div class="preloader">
+      <div class="loader">
+          <div class="loader__figure"></div>
+          <p class="loader__label">Admin Pro</p>
+      </div>
+  </div>
 
-            // The ID token you need to pass to your backend:
-            var id_token = googleUser.getAuthResponse().id_token;
-            console.log("ID Token: " + id_token);
-        }
-    </script>
-    <script>
-        function signOut() {
-            var auth2 = gapi.auth2.getAuthInstance();
-            auth2.signOut().then(function () {
-                console.log('User signed out.');
-            });
-        }
-    </script>
-</body>
 
+  <app-root></app-root>
+
+
+  <script src="./assets/plugins/jquery/jquery.min.js"></script>
+
+  <!-- Bootstrap tether Core JavaScript -->
+  <script src="./assets/plugins/bootstrap/js/popper.min.js"></script>
+  <script src="./assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+   <!-- slimscrollbar scrollbar JavaScript -->
+   <script src="./assets/js/perfect-scrollbar.jquery.min.js"></script>
+  <!--Wave Effects -->
+  <script src="./assets/js/waves.js"></script>
+   <!--Menu sidebar -->
+   <script src="./assets/js/sidebarmenu.js"></script>
+   <!--stickey kit -->
+   <script src="./assets/plugins/sticky-kit-master/dist/sticky-kit.min.js"></script>
+   <script src="./assets/plugins/jquery-sparkline/jquery.sparkline.min.js"></script>
+   <!--Custom JavaScript -->
+   <script src="./assets/js/custom.js"></script>
+   
+   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<script src="runtime-es2015.ebc36cfd948818da8eb6.js" type="module"></script><script src="runtime-es5.ebc36cfd948818da8eb6.js" nomodule defer></script><script src="polyfills-es5.177e85a9724683782539.js" nomodule defer></script><script src="polyfills-es2015.f332a089ad1600448873.js" type="module"></script><script src="main-es2015.affe0d776dbb2848860f.js" type="module"></script><script src="main-es5.affe0d776dbb2848860f.js" nomodule defer></script></body>
 </html>
