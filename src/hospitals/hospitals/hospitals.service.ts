@@ -9,12 +9,15 @@ export class HospitalsService {
 
     constructor( @InjectModel('Hospital') private hospitalModel: Model<hospitalsI> ){}
 
-    async getHospitals(): Promise<hospitalsI[]>{
-        const hospitals = await this.hospitalModel.find().populate('creator', 'name _id img');
-        if(!hospitals.length) throw new NotFoundException(HttpStatus.NOT_FOUND, 'No hay hospitales registrados');
-
+    async getHospitals(from: number): Promise<[hospitalsI[],number]>{
+        const hospitals = await Promise.all([
+            this.hospitalModel.find().populate('creator', 'name _id img').skip(from).limit(5),
+            this.hospitalModel.countDocuments()
+        ])
+      
         return hospitals;
     }
+    //
 
     async createHospital( creatorId: string, newHospital: hospitalDto): Promise<hospitalsI>{
          
@@ -22,7 +25,7 @@ export class HospitalsService {
             const hospital = new this.hospitalModel(newHospital);
             hospital.creator = creatorId;
             const savedHospital = await hospital.save();
-            await savedHospital.populate('creator', 'name email').execPopulate();
+            await savedHospital.populate('creator', 'name _id email').execPopulate();
 
             return savedHospital;
         } catch (error) {
@@ -30,8 +33,8 @@ export class HospitalsService {
         }
     }
 
-    async updateHospital( hospital: hospitalDto, hospitalId: string ): Promise<hospitalsI> {
-        const updated = await this.hospitalModel.updateOne({_id: hospitalId}, hospital, {new: true});
+    async updateHospital( hospital: hospitalDto, hospitalId: string, creatorId: string ): Promise<hospitalsI> {
+        const updated = await this.hospitalModel.updateOne({_id: hospitalId}, {creator: creatorId, ...hospital}, {new: true});
         if(!updated) throw new HttpException('no se pudo actualizar el hospital', HttpStatus.INTERNAL_SERVER_ERROR);
 
         return updated;
@@ -42,7 +45,7 @@ export class HospitalsService {
         
         try {
           await this.hospitalModel.deleteOne({_id: hospitalId});
-          deleted = true;
+          deleted = true; 
           return deleted;
 
         } catch (error) {

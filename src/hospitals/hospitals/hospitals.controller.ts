@@ -1,11 +1,11 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request, Response } from 'express';
 import { diskStorage } from 'multer';
 import { JwtPayload } from 'src/auth/interfaces/payload.interface';
 import { editFileName, imageFileFilter } from 'src/utils/file-upload.utils';
-import { hospitalsI } from '../hospital.interface/hospital.interface';
+import { hospitalsI } from '../hospital.interface/hospital.interface'; 
 import { hospitalDto } from '../hospitalDto/hospital.dto';
 import { HospitalsService } from './hospitals.service';
 
@@ -16,9 +16,10 @@ export class HospitalsController {
 
     @Get('/')
     @UseGuards(AuthGuard())
-    async getHospitals( @Res() res: Response ){
-        const hospitals: hospitalsI[] = await this.hospitalSvc.getHospitals();
-        return res.status(HttpStatus.OK).json(hospitals);
+    async getHospitals( @Res() res: Response, @Query('from')from: string ){
+        const desde = from ? Number(from) : 0;
+        const [hospitals, total]= await this.hospitalSvc.getHospitals(desde);
+        return res.status(HttpStatus.OK).json({hospitals, total});
     }
 
     @Post('/new')
@@ -32,14 +33,17 @@ export class HospitalsController {
 
     @Put('/edit/:id')
     @UseGuards(AuthGuard())
-    async deleteHospital( @Res() res: Response, @Param('id') hospitalId: any, @Body() hospital: hospitalDto ) {
-        const updated = await this.hospitalSvc.updateHospital(hospital, hospitalId);
+    async updateHospital
+    ( @Res() res: Response, @Param('id') hospitalId: any, @Body() hospital: hospitalDto, @Req() req: Request ) {
+        const user = <JwtPayload> req.user;
+        
+        const updated = await this.hospitalSvc.updateHospital(hospital, hospitalId, user._id);
         return res.status(HttpStatus.OK).json({hospital: updated});
     }
 
     @Delete('/:id')
     @UseGuards(AuthGuard())
-    async deleteUser( @Res() res: Response, @Param('id') hospitalId: any) {
+    async deleteHospital( @Res() res: Response, @Param('id') hospitalId: any) {
        const deleted = await this.hospitalSvc.removeHospital(hospitalId);
        return res.status(HttpStatus.OK).json({message: `hospital eliminado: ${deleted}`});
     }
@@ -61,7 +65,6 @@ export class HospitalsController {
     }
 
     @Get('image/:imageFile')
-    @UseGuards(AuthGuard())
     async getHospitalImage(@Res() res: Response, @Param('imageFile') image ){
         return res.sendFile(image, { root: './hospitals'});
     }

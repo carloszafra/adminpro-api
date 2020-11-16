@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config'; 
 
 
 
@@ -17,7 +17,7 @@ import { SearchModule } from './search/search.module';
   imports: [
     ConfigModule.forRoot(),
     MongooseModule.forRoot(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}${process.env.MONGO_URL}`),
-    UsersModule,
+    UsersModule,          
     AuthModule,
     HospitalsModule,
     DoctorsModule,

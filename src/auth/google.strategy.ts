@@ -12,7 +12,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             clientSecret: process.env.GOOGLE_SECRET,
             callbackURL: 'http://localhost:3002/auth/google/callback',
             scope: ['email', 'profile'],
-        })
+        }) 
     }
 
     async validate(accessToken: string, refreshToken: string, profile: any, done: VerifyCallback): Promise<any> {
@@ -21,7 +21,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         const user_ = {
             email: emails[0].value,
             name: displayName,
-            firstName: name.givenName,
+            firstName: name.givenName, 
             lastName: name.familyName,
             img: photos[0].value,
             accessToken

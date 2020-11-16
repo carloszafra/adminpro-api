@@ -3,11 +3,11 @@ import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
 import { userI } from 'src/users/user.interface/user.interface';
 import { SearchService } from './search.service';
-
+ 
 @Controller('api/search')
 export class SearchController {
 
-    constructor( private searchSvc: SearchService ){}
+    constructor( private searchSvc: SearchService ){} 
 
     @Get('/:param')
     @UseGuards(AuthGuard())
@@ -22,8 +22,8 @@ export class SearchController {
     async searchByCollection
     ( @Res() res: Response, @Req() req: Request, @Param('collection') collection: any, @Param('param') param: any){
       
-        const result = await this.searchSvc.searchByCollection(collection, param);
+        const data = await this.searchSvc.searchByCollection(collection, param);
 
-       return res.status(HttpStatus.OK).send(result);
+       return res.status(HttpStatus.OK).json({result: data});
     }
 }

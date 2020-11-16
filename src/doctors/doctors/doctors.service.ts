@@ -24,6 +24,27 @@ export class DoctorsService {
         }
     }
 
+    async updateDoctor(doctorId: string, doctorDto: doctorDto, creatorId: string): Promise<doctorI> {
+        const updated = await this.doctorModel
+         .updateOne({_id: doctorId},{creator: creatorId, ...doctorDto});
+
+        if(!updated) throw new HttpException('no se pudo actualizar el medico', HttpStatus.INTERNAL_SERVER_ERROR);
+
+        return updated;
+    }
+
+    async deleteDoctor(doctorId: string): Promise<any>{
+        let deleted = false;
+
+        try {
+            await this.doctorModel.deleteOne({_id: doctorId});
+            deleted = true;
+            return deleted;
+        } catch (error) {
+            throw new HttpException(`no se pudo borrar el doctor: ${deleted}`, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     async getDoctors(): Promise<doctorI[]> {
         const doctors = await this.doctorModel.find()
         .populate('creator', 'name _id img')
@@ -32,6 +53,18 @@ export class DoctorsService {
         if(!doctors.length) throw new NotFoundException(HttpStatus.NOT_FOUND, 'no hay doctores registrados');
 
         return doctors;
+    }
+
+    async getDoctor(id: string): Promise<doctorI> {
+      try {
+          const doctor = await this.doctorModel.findOne({_id: id})
+             .populate('creator', 'name _id img')
+             .populate('hospital', 'name _id imageUrl');
+          return doctor;
+
+        } catch (error) {
+           throw new HttpException(`no se pudo encontrar: ${error}`, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     async postDoctorImg( fileUrl: string, doctorId: string ): Promise<doctorI> {

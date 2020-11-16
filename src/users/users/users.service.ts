@@ -11,6 +11,14 @@ export class UsersService {
 
     constructor( @InjectModel('User') private userModel: Model<userI> ){}
 
+    private async userRole(userId: string): Promise<boolean>{
+       let isAdmin: boolean = false;
+       const user: userI = await this.findById(userId);
+       (user.role === "ADMIN_ROLE") ? isAdmin = true : isAdmin = false;
+
+       return isAdmin;
+    }
+
     async findByEmail(email: string): Promise<userI> {
         const user = await this.userModel.findOne({email: email});
         return user;
@@ -53,11 +61,30 @@ export class UsersService {
         return user;
     }
 
-    async updateUser( userId: string, user: edituserDto ): Promise<userI>{
+    async updateUser( userId: string, userLog: string ,user: edituserDto ): Promise<userI>{
+        const emailExists = await this.userModel.findOne({email: user.email});
+        if(emailExists) throw new NotImplementedException(HttpStatus.NOT_IMPLEMENTED, 'the email is already used');
+
+        const isAdmin = await this.userRole(userLog);
+        if(!isAdmin) throw new MethodNotAllowedException(HttpStatus.UNAUTHORIZED);
+
+        const userUpdated = await this.userModel.findByIdAndUpdate(userId, user, {new: true});
+        if(userUpdated.google){
+            userUpdated.email = user.email;
+        }
+        
+        return userUpdated;
+    }
+
+    async updateProfile( userId: string, user: edituserDto): Promise<userI>{
         const emailExists = await this.userModel.findOne({email: user.email});
         if(emailExists) throw new NotImplementedException(HttpStatus.NOT_IMPLEMENTED, 'the email is already used');
 
         const userUpdated = await this.userModel.findByIdAndUpdate(userId, user, {new: true});
+        if(userUpdated.google){
+            userUpdated.email = user.email;
+        }
+        
         return userUpdated;
     }
 
@@ -65,7 +92,7 @@ export class UsersService {
         
         try {
             const deleted = await this.userModel.deleteOne({_id: userId});
-            return deleted
+            return deleted 
         } catch (error) {
             throw new HttpException(error, HttpStatus.NOT_IMPLEMENTED)
         }
@@ -81,7 +108,7 @@ export class UsersService {
     }
     async updateUserImg( fileUrl: any, userId: string ): Promise<userI> {
        try {
-           const user = await this.userModel.updateOne({_id: userId}, {img: fileUrl}, {new: true});
+           const user = await this.userModel.findOneAndUpdate({_id: userId}, {img: fileUrl}, {new: true});
            return user;
        } catch (error) {
            throw new HttpException('no se pudo subir la imagen', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -95,7 +122,7 @@ export class UsersService {
             newUser.name = user.name;
             newUser.img = user.img;
             newUser.google = true;
-            newUser.email = user.email;
+            newUser.email = user.email; 
             const savedUser = await newUser.save();
 
             return savedUser;
