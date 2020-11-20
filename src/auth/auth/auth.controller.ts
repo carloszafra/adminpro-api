@@ -35,7 +35,7 @@ export class AuthController {
     async googleLoginCallback(@Req() req, @Res() res: Response){
         const response: any = this.authSvc.googleLogin(req);
         //return res.status(200).json(response.user.accessToken)
-        res.redirect(`http://localhost:4200/google/${response.user.accessToken}`)
+        res.redirect(`https://adminpro-rest.herokuapp.com/google/${response.user.accessToken}`)
     }
 
     @Get('renew')
