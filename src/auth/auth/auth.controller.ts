@@ -1,7 +1,6 @@
 import { Controller, Post, Body, HttpException, HttpStatus, Res, Get, UseGuards, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { userDto } from 'src/users/userDTO/user.dto';
-import { RegistrationStatus } from '../interfaces/registration.interface';
 import { logeduserDto } from 'src/users/userDTO/logeduser.dto';
 import { userI } from 'src/users/user.interface/user.interface';
 import { AuthGuard } from '@nestjs/passport';
