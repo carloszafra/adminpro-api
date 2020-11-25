@@ -5,6 +5,7 @@ import { doctorSchema } from './doctor.schema/doctor.schema';
 import { DoctorsController } from './doctors/doctors.controller';
 import { DoctorsService } from './doctors/doctors.service';
 import { AuthModule } from '../auth/auth.module';
+import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -12,7 +13,8 @@ import { AuthModule } from '../auth/auth.module';
     MongooseModule.forFeature([
       { name: 'Doctor', schema: doctorSchema },
       { name: 'Hospital', schema: hospitalSchema }
-    ])
+    ]),
+    CloudinaryModule
   ],
   controllers: [DoctorsController],
   providers: [DoctorsService]

@@ -12,6 +12,8 @@ import { AuthModule } from './auth/auth.module';
 import { HospitalsModule } from './hospitals/hospitals.module';
 import { DoctorsModule } from './doctors/doctors.module';
 import { SearchModule } from './search/search.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { CloudinaryProvider } from './cloudinary';
 
 @Module({
   imports: [
@@ -24,7 +26,8 @@ import { SearchModule } from './search/search.module';
     AuthModule,
     HospitalsModule,
     DoctorsModule,
-    SearchModule
+    SearchModule,
+    CloudinaryModule
   ],
   controllers: [AppController],
   providers: [AppService],

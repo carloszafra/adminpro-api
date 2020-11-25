@@ -4,15 +4,17 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Request, Response } from 'express';
 import { diskStorage } from 'multer';
 import { JwtPayload } from 'src/auth/interfaces/payload.interface';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { editFileName, imageFileFilter } from 'src/utils/file-upload.utils';
 import { doctorDto } from '../doctor.dto/doctor.dto';
+import { imgdoctorDto } from '../doctor.dto/imageDoctor.dto'
 import { doctorI } from '../doctor.interface/doctor.interface';
 import { DoctorsService } from './doctors.service';
 
 @Controller('api/doctors') 
 export class DoctorsController {
     
-    constructor( private doctorSvc: DoctorsService ){}
+    constructor( private doctorSvc: DoctorsService, private cloudSvc: CloudinaryService ){}
 
     @Post('/new')
     @UseGuards(AuthGuard())
@@ -59,20 +61,20 @@ export class DoctorsController {
 
     @Post('/image/:id')
     @UseGuards(AuthGuard())
-    @UseInterceptors(FileInterceptor('image', {
-        storage: diskStorage({
-            destination: './doctors',
-            filename: editFileName
-        }),
-        fileFilter: imageFileFilter
-    }),
-    )
-    async postDoctorImg(@Res() res: Response, @UploadedFile() file: any, @Param('id') doctorId: string ){
+    async postDoctorImg(@Res() res: Response, @Body() file:imgdoctorDto, @Param('id') doctorId: string ){
         console.log(file)
-        const doctor = await this.doctorSvc.postDoctorImg(file.filename, doctorId);
+        const doctor = await this.doctorSvc.postDoctorImg(file.imageUrl, doctorId);
         console.log(doctor)
 
         return res.status(HttpStatus.OK).json(doctor);
+    }
+
+    @Post('/cloudinary')
+    @UseInterceptors(FileInterceptor('image'))
+    async postImage(@Res() res: Response, @UploadedFile() file: any){
+        console.log(file)
+        const resp = await this.cloudSvc.uploadFile(file);
+        return res.status(200).json(resp);
     }
 
     @Get('image/:imageFile')

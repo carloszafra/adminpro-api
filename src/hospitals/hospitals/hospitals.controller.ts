@@ -7,6 +7,7 @@ import { JwtPayload } from 'src/auth/interfaces/payload.interface';
 import { editFileName, imageFileFilter } from 'src/utils/file-upload.utils';
 import { hospitalsI } from '../hospital.interface/hospital.interface'; 
 import { hospitalDto } from '../hospitalDto/hospital.dto';
+import { editHospitalDto } from '../hospitalDto/editHospitalDto';
 import { HospitalsService } from './hospitals.service';
 
 @Controller('api/hospitals')
@@ -50,16 +51,9 @@ export class HospitalsController {
 
     @Post('/image/:id')
     @UseGuards(AuthGuard())
-    @UseInterceptors(FileInterceptor('image', {
-        storage: diskStorage({
-            destination: './hospitals',
-            filename: editFileName
-        }),
-        fileFilter: imageFileFilter
-    }),
-    )
-    async posthospitalImg(@Res() res: Response, @UploadedFile() file: any, @Param('id') hospitalId: string ){
-        const doctor = await this.hospitalSvc.postHospitalImg(file.filename, hospitalId);
+    async posthospitalImg(@Res() res: Response, @Body() file: editHospitalDto, @Param('id') hospitalId: string ){
+        console.log(file)
+        const doctor = await this.hospitalSvc.postHospitalImg(file, hospitalId);
 
         return res.status(HttpStatus.OK).json(doctor);
     }

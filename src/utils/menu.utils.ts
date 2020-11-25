@@ -16,7 +16,7 @@ export const menu = (role: string = 'USER_ROLE') => {
             title: 'Maintenance',
             icon: 'mdi mdi-folder-lock-open',
             submenu: [
-                { title: 'Hospitals', url: 'hospitals' },
+                { title: 'Hospitals', url: 'hospitals' }, 
                 { title: 'Doctors', url: 'doctors' }
             ]
         }

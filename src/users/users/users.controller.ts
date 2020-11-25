@@ -64,17 +64,9 @@ export class UsersController {
 
   @Post('/image/:id')
   @UseGuards(AuthGuard())
-  @UseInterceptors(FileInterceptor('image', {
-    storage: diskStorage({
-      destination: './users',
-      filename: editFileName
-    }),
-    fileFilter: imageFileFilter
-  }),
-  )
   async uploadUserImg
-  (@Res() res: Response, @Req() req: Request, @UploadedFile() file: any, @Param('id')userId: string){
-    const userUpdated = await this.userSvc.updateUserImg(file.filename, userId);
+  (@Res() res: Response, @Req() req: Request, @Body() file: edituserDto, @Param('id')userId: string){
+    const userUpdated = await this.userSvc.updateUserImg(file.img, userId);
 
     return res.status(HttpStatus.OK).json(userUpdated);
   }

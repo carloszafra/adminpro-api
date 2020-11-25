@@ -70,10 +70,7 @@ export class DoctorsService {
     async postDoctorImg( fileUrl: string, doctorId: string ): Promise<doctorI> {
         try {
             const doctor = await this.doctorModel.findOne({_id: doctorId});
-            const oldPath = `./doctors/${doctor.imageUrl}`;
-
-            if(fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
-
+            console.log(fileUrl)
             doctor.imageUrl = fileUrl
             await doctor.save();
             return doctor;

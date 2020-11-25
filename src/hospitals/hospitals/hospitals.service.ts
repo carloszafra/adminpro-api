@@ -53,9 +53,9 @@ export class HospitalsService {
         }
     }
 
-   async postHospitalImg(fileUrl: string, hospitalId: string ): Promise<hospitalsI> {
+   async postHospitalImg(fileUrl: hospitalDto, hospitalId: string ): Promise<hospitalsI> {
        try{
-          const hospital = await this.hospitalModel.updateOne({_id: hospitalId}, {imageUrl: fileUrl}, {new: true});
+          const hospital = await this.hospitalModel.updateOne({_id: hospitalId}, {imageUrl: fileUrl.imageUrl}, {new: true});
           return hospital;
        }catch(error){
            throw new HttpException('no se pudo subir la imagen', HttpStatus.INTERNAL_SERVER_ERROR);
